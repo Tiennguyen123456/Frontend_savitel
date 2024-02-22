@@ -88,6 +88,9 @@
             "city": "Thành phố",
             "status": "Trạng thái",
             "updateAt": "Ngày cập nhật"
+        },
+        "create": {
+            "title": "Tạo công ty"
         }
     },
     "configEventPage": {
@@ -315,5 +318,10 @@
         "subtitle": "Không tìm thấy trang",
         "description": "Trang bạn đang tìm kiếm không tồn tại!",
         "gohome": "Chuyển tới trang chủ"
+    },
+    "breadcrumb": {
+        "home": "Bảng điều khiển",
+        "company": "Công ty",
+        "createCompany": "Tạo công ty"
     }
 }
