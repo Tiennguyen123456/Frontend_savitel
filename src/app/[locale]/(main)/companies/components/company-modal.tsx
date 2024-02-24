@@ -20,7 +20,7 @@ import companyApi from "@/services/company-api";
 
 interface CompanyModalProps extends IModal {
     className?: string;
-    defaultCompany: ICompanyRes | undefined;
+    defaultCompany: ICompanyRes | null;
     onConfirm: () => void;
 }
 
@@ -49,6 +49,7 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
 
     // useForm
     const formSchema = z.object({
+        id: z.number().optional(),
         name: z.string().min(1, { message: translation("error.requiredName") }),
         code: z
             .string()
@@ -83,22 +84,22 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
             .default(1),
     });
     type CompanyFormValues = z.infer<typeof formSchema>;
-
+    const resetDataForm: CompanyFormValues = {
+        name: "",
+        code: "",
+        tax_code: "",
+        contact_email: "",
+        contact_phone: "",
+        website: "",
+        address: "",
+        status: "NEW",
+        limited_users: 1,
+        limited_events: 1,
+        limited_campaigns: 1,
+    };
     const form = useForm<CompanyFormValues>({
         resolver: zodResolver(formSchema),
-        defaultValues: defaultCompany || {
-            name: "",
-            code: "",
-            tax_code: "",
-            contact_email: "",
-            contact_phone: "",
-            website: "",
-            address: "",
-            status: "NEW",
-            limited_users: 1,
-            limited_events: 1,
-            limited_campaigns: 1,
-        },
+        defaultValues: defaultCompany || resetDataForm,
     });
 
     const onSubmit = async (data: CompanyFormValues) => {
@@ -111,8 +112,7 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                 toastSuccess(messageSuccess);
             }
             onConfirm();
-            form.reset();
-            onClose();
+            handleCloseModal();
         } catch (error: any) {
             const data = error?.response?.data;
             if (data?.message_code) {
@@ -125,6 +125,22 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
             setLoading(false);
         }
     };
+
+    const handleCloseModal = () => {
+        form.reset();
+        onClose();
+    };
+
+    useEffect(() => {
+        if (defaultCompany != undefined) {
+            form.reset(defaultCompany);
+        } else {
+            form.reset({
+                ...resetDataForm,
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [defaultCompany]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -140,7 +156,7 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
             title={title}
             description=""
             isOpen={isOpen}
-            onClose={onClose}
+            onClose={handleCloseModal}
         >
             <Form {...form}>
                 <form
@@ -154,13 +170,13 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Name
+                                        {translation("label.name")}
                                         <SpanRequired />
                                     </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Enter name"
+                                            placeholder={translation("placeholder.name")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -174,13 +190,13 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="text-base">
-                                        Code
+                                        {translation("label.companyCode")}
                                         <SpanRequired />
                                     </FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Enter code"
+                                            placeholder={translation("placeholder.companyCode")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -193,11 +209,11 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="tax_code"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Tax Code</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.taxCode")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Enter tax code"
+                                            placeholder={translation("placeholder.taxCode")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -210,11 +226,11 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="website"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Website</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.website")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Enter website"
+                                            placeholder={translation("placeholder.website")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -227,11 +243,11 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="contact_email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Email</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.email")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Enter email"
+                                            placeholder={translation("placeholder.email")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -244,11 +260,11 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="contact_phone"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Phone</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.phone")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Enter phone"
+                                            placeholder={translation("placeholder.phone")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -261,11 +277,11 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="address"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Address</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.address")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             disabled={loading}
-                                            placeholder="Enter address"
+                                            placeholder={translation("placeholder.address")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -278,7 +294,7 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="status"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Status</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.status")}</FormLabel>
                                     <Select
                                         disabled={loading}
                                         onValueChange={field.onChange}
@@ -289,7 +305,7 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                                             <SelectTrigger className="h-12">
                                                 <SelectValue
                                                     defaultValue={field.value}
-                                                    placeholder="Select a status"
+                                                    placeholder={translation("placeholder.status")}
                                                 />
                                             </SelectTrigger>
                                         </FormControl>
@@ -317,12 +333,12 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="limited_events"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Limited Events</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.limitEvent")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
                                             disabled={loading}
-                                            placeholder="Enter limited events"
+                                            placeholder={translation("placeholder.limitEvent")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -335,12 +351,12 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="limited_users"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Limited User</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.limitUser")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
                                             disabled={loading}
-                                            placeholder="Enter limited user"
+                                            placeholder={translation("placeholder.limitUser")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -353,12 +369,12 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             name="limited_campaigns"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-base">Limited Campaigns</FormLabel>
+                                    <FormLabel className="text-base">{translation("label.limitCampaign")}</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="number"
                                             disabled={loading}
-                                            placeholder="Enter limited user"
+                                            placeholder={translation("placeholder.limitCampaign")}
                                             {...field}
                                         />
                                     </FormControl>
@@ -376,9 +392,10 @@ export const CompanyModal: React.FC<CompanyModalProps> = ({
                             {action}
                         </Button>
                         <Button
+                            type="button"
                             disabled={loading}
                             variant="outline"
-                            onClick={onClose}
+                            onClick={handleCloseModal}
                         >
                             {translation("action.cancel")}
                         </Button>
