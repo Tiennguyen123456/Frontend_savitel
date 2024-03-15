@@ -11,6 +11,7 @@ export const arrNumberRowInPage = [10, 20, 30, 40, 50];
 export const phoneRegExp = new RegExp(
     /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/,
 );
+export const emailRegExp = new RegExp(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i);
 
 export const replaceIdInURLRegExp = new RegExp(/\/\d+/);
 
@@ -50,9 +51,11 @@ export const CAMPAIGN_STATUS = [
     { label: "Running", value: "RUNNING" },
     { label: "Paused", value: "PAUSED" },
     { label: "Stopped", value: "STOPPED" },
-    { label: "Finished", value: "FINISHED" }
+    { label: "Finished", value: "FINISHED" },
 ];
-export const STATUS_FILTER_CAMPAIGN = [
-    { label: "All status", value: "ALL" },
-    ...CAMPAIGN_STATUS
+export const CLIENT_CHECK_IN_STATUS = [
+    { label: "CheckIn", value: "CHECKIN" },
+    { label: "UnCheckIn", value: "UNCHECKIN" },
 ];
+export const STATUS_FILTER_CAMPAIGN = [{ label: "All status", value: "ALL" }, ...CAMPAIGN_STATUS];
+export const STATUS_FILTER_CLIENT_CHECK_IN = [{ label: "All", value: "ALL" }, ...CLIENT_CHECK_IN_STATUS];
